@@ -1,37 +1,29 @@
 # Features
 
-This release validates and snapshots routed Simple Route JSON. It does not alter
-route geometry or perform length matching.
+No length-matching features are supported yet. Version `0.0.1` is an integration
+scaffold: it validates and snapshots routed Simple Route JSON but intentionally
+does not alter route geometry.
 
-## Routed SRJ pass-through
+## Planned features
 
-`solve()` preserves the complete routed SRJ without changing trace geometry.
-Constructor inputs remain unchanged, each output is structurally independent,
-and requesting output before solving fails.
+### Single-meander length matching
 
-Representative tests:
+Add a meander to the shorter member of a differential pair when the existing
+route has enough usable space to satisfy the configured length tolerance.
 
-- [returns an independent output](tests/features/routed-srj-pass-through/success/output-cloning.test.ts)
-- [rejects output before solve](tests/features/routed-srj-pass-through/failure/output-before-solve.test.ts)
+Status: not implemented.
 
-## Explicit differential-pair constraints
+### Rerouting with meanders
 
-The solver accepts a readonly array containing every differential pair for one
-invocation, snapshots every pair, validates pair shapes and tolerances, and
-rejects missing, malformed, or ambiguous connection references.
+Reroute either or both members of a differential pair to create room for
+meanders while treating unrelated traces and fixed PCB geometry as immutable
+obstacles.
 
-Representative tests:
+Status: not implemented.
 
-- [retains every supplied pair](tests/features/explicit-differential-pair-constraints/success/constructor-params.test.ts)
-- [rejects unknown connections](tests/features/explicit-differential-pair-constraints/failure/unknown-connection.test.ts)
+## Scaffold contract tests
 
-## Deprecated embedded-constraint compatibility
+The initial release is covered by contract tests rather than feature tests:
 
-The optional `SimpleRouteJson.differentialPairs` field is accepted when it is
-equivalent to the explicit constraints, regardless of pair or member order.
-Malformed or conflicting embedded constraints are rejected.
-
-Representative tests:
-
-- [accepts equivalent constraints](tests/features/deprecated-embedded-constraint-compatibility/success/equivalent-constraints.test.ts)
-- [rejects conflicting constraints](tests/features/deprecated-embedded-constraint-compatibility/failure/conflicting-constraints.test.ts)
+- [returns an independent no-op output](tests/features/routed-srj-pass-through/success/output-cloning.test.ts)
+- [rejects invalid pair constraints](tests/features/explicit-differential-pair-constraints/failure/unknown-connection.test.ts)

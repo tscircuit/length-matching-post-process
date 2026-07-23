@@ -4,8 +4,8 @@ Validate and snapshot routed
 [Simple Route JSON](https://github.com/tscircuit/simple-route-json) at the
 package boundary for differential-pair length matching.
 
-See [FEATURES.md](./FEATURES.md) for the currently supported behavior and
-representative success and failure tests.
+See [FEATURES.md](./FEATURES.md) for the current implementation status and
+planned user-facing length-matching capabilities.
 
 ## Initial no-op release
 
