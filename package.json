@@ -4,16 +4,17 @@
   "description": "Differential-pair length-matching post-processing for Simple Route JSON",
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./lib/index.ts",
+  "module": "./lib/index.ts",
+  "types": "./lib/index.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./lib/index.ts",
+      "import": "./lib/index.ts"
     }
   },
   "files": [
-    "dist",
+    "lib",
     "README.md",
     "FEATURES.md"
   ],
