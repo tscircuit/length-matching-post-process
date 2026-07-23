@@ -1,9 +1,6 @@
 export { DifferentialPairSolver } from "./differential-pair-solver"
 export type {
-  SimpleRouteConnection,
-  SimpleRouteDifferentialPair,
+  DifferentialPairConstraints,
   SimpleRouteJson,
-  SimpleRouteObstacle,
   SimplifiedPcbTrace,
-  SrjConnectionName,
 } from "./simple-route-json"

@@ -1,45 +1,7 @@
 import type {
-  SimpleRouteDifferentialPair,
+  DifferentialPairConstraints,
   SimpleRouteJson,
 } from "./simple-route-json"
-
-const cloneSimpleRouteJson = (
-  simpleRouteJson: SimpleRouteJson,
-): SimpleRouteJson => structuredClone(simpleRouteJson)
-
-const cloneDifferentialPairs = (
-  differentialPairs: readonly SimpleRouteDifferentialPair[],
-): SimpleRouteDifferentialPair[] =>
-  differentialPairs.map(({ connectionNames, lengthTolerance }) => ({
-    connectionNames: [connectionNames[0], connectionNames[1]],
-    lengthTolerance,
-  }))
-
-const getCanonicalDifferentialPairKeys = (
-  differentialPairs: readonly SimpleRouteDifferentialPair[],
-): string[] =>
-  differentialPairs
-    .map(({ connectionNames, lengthTolerance }) =>
-      JSON.stringify({ connectionNames, lengthTolerance }),
-    )
-    .sort()
-
-const embeddedDifferentialPairsMatchExplicitPairs = (
-  embeddedDifferentialPairs: readonly SimpleRouteDifferentialPair[],
-  explicitDifferentialPairs: readonly SimpleRouteDifferentialPair[],
-): boolean => {
-  const embeddedKeys = getCanonicalDifferentialPairKeys(
-    embeddedDifferentialPairs,
-  )
-  const explicitKeys = getCanonicalDifferentialPairKeys(
-    explicitDifferentialPairs,
-  )
-
-  return (
-    embeddedKeys.length === explicitKeys.length &&
-    embeddedKeys.every((key, index) => key === explicitKeys[index])
-  )
-}
 
 const validateSimpleRouteJson = (simpleRouteJson: SimpleRouteJson): void => {
   if (!Array.isArray(simpleRouteJson.connections)) {
@@ -57,7 +19,7 @@ const validateSimpleRouteJson = (simpleRouteJson: SimpleRouteJson): void => {
 
 const validateDifferentialPairs = (
   simpleRouteJson: SimpleRouteJson,
-  differentialPairs: readonly SimpleRouteDifferentialPair[],
+  differentialPairs: readonly DifferentialPairConstraints[],
 ): void => {
   const connectionCountsByName = new Map<string, number>()
   for (const connection of simpleRouteJson.connections) {
@@ -108,51 +70,70 @@ const validateDifferentialPairs = (
     }
   }
 
-  const embeddedDifferentialPairs = simpleRouteJson.differentialPairs
-  if (
-    embeddedDifferentialPairs &&
-    !embeddedDifferentialPairsMatchExplicitPairs(
-      embeddedDifferentialPairs,
-      differentialPairs,
-    )
-  ) {
-    throw new Error(
-      "simpleRouteJson.differentialPairs conflicts with the explicit differentialPairs constructor argument. Pass the same constraints in both locations or omit the deprecated embedded field.",
-    )
+  const embeddedDifferentialPairs = simpleRouteJson.differentialPairs as
+    | DifferentialPairConstraints[]
+    | undefined
+  if (embeddedDifferentialPairs) {
+    const embeddedPairKeys = embeddedDifferentialPairs
+      .map(({ connectionNames, lengthTolerance }) =>
+        JSON.stringify({ connectionNames, lengthTolerance }),
+      )
+      .sort()
+    const explicitPairKeys = differentialPairs
+      .map(({ connectionNames, lengthTolerance }) =>
+        JSON.stringify({ connectionNames, lengthTolerance }),
+      )
+      .sort()
+    if (
+      embeddedPairKeys.length !== explicitPairKeys.length ||
+      embeddedPairKeys.some(
+        (embeddedPairKey, pairIndex) =>
+          embeddedPairKey !== explicitPairKeys[pairIndex],
+      )
+    ) {
+      throw new Error(
+        "simpleRouteJson.differentialPairs conflicts with the explicit differentialPairs constructor argument. Pass the same constraints in both locations or omit the deprecated embedded field.",
+      )
+    }
   }
 }
 
+/** Validates and post-processes routed differential-pair connections. */
 export class DifferentialPairSolver {
   private readonly inputSimpleRouteJson: SimpleRouteJson
-  private readonly inputDifferentialPairs: readonly SimpleRouteDifferentialPair[]
+  private readonly inputDifferentialPairs: readonly DifferentialPairConstraints[]
   private outputSimpleRouteJson: SimpleRouteJson | null = null
 
+  /** Validates and snapshots the complete routed SRJ and pair constraints. */
   constructor(
     simpleRouteJson: SimpleRouteJson,
-    differentialPairs: readonly SimpleRouteDifferentialPair[],
+    differentialPairs: readonly DifferentialPairConstraints[],
   ) {
     validateSimpleRouteJson(simpleRouteJson)
     validateDifferentialPairs(simpleRouteJson, differentialPairs)
 
-    this.inputSimpleRouteJson = cloneSimpleRouteJson(simpleRouteJson)
-    this.inputDifferentialPairs = cloneDifferentialPairs(differentialPairs)
+    this.inputSimpleRouteJson = structuredClone(simpleRouteJson)
+    this.inputDifferentialPairs = structuredClone(differentialPairs)
   }
 
+  /** Returns independent snapshots of the solver's constructor inputs. */
   getConstructorParams(): readonly [
     SimpleRouteJson,
-    readonly SimpleRouteDifferentialPair[],
+    readonly DifferentialPairConstraints[],
   ] {
     return [
-      cloneSimpleRouteJson(this.inputSimpleRouteJson),
-      cloneDifferentialPairs(this.inputDifferentialPairs),
+      structuredClone(this.inputSimpleRouteJson),
+      structuredClone(this.inputDifferentialPairs),
     ]
   }
 
+  /** Produces a complete routed SRJ without changing route geometry yet. */
   solve(): void {
     // TODO: Coordinate all differential pairs and generate matched routes.
-    this.outputSimpleRouteJson = cloneSimpleRouteJson(this.inputSimpleRouteJson)
+    this.outputSimpleRouteJson = structuredClone(this.inputSimpleRouteJson)
   }
 
+  /** Returns an independent complete SRJ after the solver has run. */
   getOutput(): SimpleRouteJson {
     if (!this.outputSimpleRouteJson) {
       throw new Error(
@@ -161,6 +142,6 @@ export class DifferentialPairSolver {
     }
 
     // Return an independent complete SRJ at the package boundary.
-    return cloneSimpleRouteJson(this.outputSimpleRouteJson)
+    return structuredClone(this.outputSimpleRouteJson)
   }
 }

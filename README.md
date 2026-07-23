@@ -1,4 +1,4 @@
-# @tscircuit/length-matching-solver
+# @tscircuit/length-matching-post-process
 
 Post-process routed [Simple Route JSON](https://github.com/tscircuit/simple-route-json)
 to satisfy differential-pair length-skew constraints.
@@ -15,13 +15,13 @@ boundary in a later release.
 
 ```ts
 import {
+  type DifferentialPairConstraints,
   DifferentialPairSolver,
-  type SimpleRouteDifferentialPair,
   type SimpleRouteJson,
-} from "@tscircuit/length-matching-solver"
+} from "@tscircuit/length-matching-post-process"
 
 const simpleRouteJson: SimpleRouteJson = getCompleteRoutedSimpleRouteJson()
-const differentialPairs: readonly SimpleRouteDifferentialPair[] = [
+const differentialPairs: readonly DifferentialPairConstraints[] = [
   {
     connectionNames: ["source_trace_positive", "source_trace_negative"],
     lengthTolerance: 0.1,

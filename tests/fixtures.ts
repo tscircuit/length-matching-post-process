@@ -1,16 +1,17 @@
 import type {
-  SimpleRouteDifferentialPair,
+  DifferentialPairConstraints,
   SimpleRouteJson,
 } from "../lib"
 
-export const differentialPairs: readonly SimpleRouteDifferentialPair[] = [
+export const differentialPairs: readonly DifferentialPairConstraints[] = [
   {
     connectionNames: ["positive_trace", "negative_trace"],
     lengthTolerance: 0.1,
   },
 ]
 
-export const createSimpleRouteJson = (): SimpleRouteJson => ({
+export const createSimpleRouteJson = (): SimpleRouteJson =>
+  ({
   layerCount: 2,
   minTraceWidth: 0.15,
   obstacles: [],
@@ -73,4 +74,4 @@ export const createSimpleRouteJson = (): SimpleRouteJson => ({
       ],
     },
   ],
-})
+  }) as SimpleRouteJson

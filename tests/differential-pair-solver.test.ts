@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import {
+  type DifferentialPairConstraints,
   DifferentialPairSolver,
-  type SimpleRouteDifferentialPair,
   type SimpleRouteJson,
 } from "../lib"
 import { createSimpleRouteJson, differentialPairs } from "./fixtures"
@@ -48,7 +48,7 @@ describe("DifferentialPairSolver no-op scaffold", () => {
         ] as const,
         lengthTolerance: 0.25,
       },
-    ] satisfies readonly SimpleRouteDifferentialPair[]
+    ] satisfies readonly DifferentialPairConstraints[]
     const solver = new DifferentialPairSolver(simpleRouteJson, multiplePairs)
 
     const [constructorSimpleRouteJson, constructorDifferentialPairs] =
@@ -79,8 +79,8 @@ describe("DifferentialPairSolver no-op scaffold", () => {
     const simpleRouteJson = createSimpleRouteJson()
     simpleRouteJson.differentialPairs = [
       {
-        connectionNames: ["positive_trace", "negative_trace"],
-        lengthTolerance: 0.2,
+        connectionNames: ["negative_trace", "positive_trace"],
+        lengthTolerance: 0.1,
       },
     ]
 
@@ -100,10 +100,19 @@ describe("DifferentialPairSolver no-op scaffold", () => {
           "positive_trace",
           "unrelated_trace",
         ] as [string, string],
-        lengthTolerance: 0.25,
+        lengthTolerance: 0.1,
+      },
+    ] satisfies DifferentialPairConstraints[]
+    simpleRouteJson.differentialPairs = [
+      {
+        connectionNames: ["positive_trace", "unrelated_trace"],
+        lengthTolerance: 0.1,
+      },
+      {
+        connectionNames: ["positive_trace", "negative_trace"],
+        lengthTolerance: 0.1,
       },
     ]
-    simpleRouteJson.differentialPairs = explicitPairs.toReversed()
 
     expect(
       () => new DifferentialPairSolver(simpleRouteJson, explicitPairs),

@@ -1,6 +1,7 @@
 import {
   DifferentialPairSolver,
   type SimpleRouteJson,
+  type SimplifiedPcbTrace,
 } from "../lib"
 import { createSimpleRouteJson, differentialPairs } from "../tests/fixtures"
 
@@ -34,14 +35,21 @@ const RoutedPair = ({
       fill="#f8fafc"
       stroke="#94a3b8"
     />
-    {simpleRouteJson.traces?.slice(0, 2).map((trace, traceIndex) => {
-      const wirePoints = trace.route.filter(
+    {(
+      simpleRouteJson.traces as SimplifiedPcbTrace[] | undefined
+    )?.slice(0, 2).map((trace, traceIndex) => {
+      const routePoints = trace.route as Array<{
+        route_type: string
+        x?: number
+        y?: number
+      }>
+      const wirePoints = routePoints.filter(
         (
           routePoint,
-        ): routePoint is Extract<
-          (typeof trace.route)[number],
-          { route_type: "wire" }
-        > => routePoint.route_type === "wire",
+        ): routePoint is { route_type: "wire"; x: number; y: number } =>
+          routePoint.route_type === "wire" &&
+          typeof routePoint.x === "number" &&
+          typeof routePoint.y === "number",
       )
       return (
         <g key={trace.pcb_trace_id}>

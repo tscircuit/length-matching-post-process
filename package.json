@@ -1,5 +1,5 @@
 {
-  "name": "@tscircuit/length-matching-solver",
+  "name": "@tscircuit/length-matching-post-process",
   "version": "0.0.1",
   "description": "Differential-pair length-matching post-processing for Simple Route JSON",
   "type": "module",
