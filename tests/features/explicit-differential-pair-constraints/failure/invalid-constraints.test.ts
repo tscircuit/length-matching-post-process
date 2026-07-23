@@ -4,9 +4,6 @@ import { createSimpleRouteJson } from "../../../fixtures/differential-pair-solve
 
 test("rejects malformed explicit constraints from JavaScript callers", () => {
   expect(() => {
-    Reflect.construct(DifferentialPairSolver, [
-      createSimpleRouteJson(),
-      [null],
-    ])
+    Reflect.construct(DifferentialPairSolver, [createSimpleRouteJson(), [null]])
   }).toThrow("Invalid differential pair at index 0: expected an object.")
 })

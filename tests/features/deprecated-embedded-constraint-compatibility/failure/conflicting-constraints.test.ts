@@ -1,8 +1,5 @@
 import { expect, test } from "bun:test"
-import {
-  DifferentialPairSolver,
-  type SimpleRouteJson,
-} from "../../../../lib"
+import { DifferentialPairSolver, type SimpleRouteJson } from "../../../../lib"
 import {
   createSimpleRouteJson,
   differentialPairs,
