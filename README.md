@@ -1,7 +1,11 @@
 # @tscircuit/length-matching-post-process
 
-Post-process routed [Simple Route JSON](https://github.com/tscircuit/simple-route-json)
-to satisfy differential-pair length-skew constraints.
+Validate and snapshot routed
+[Simple Route JSON](https://github.com/tscircuit/simple-route-json) at the
+package boundary for differential-pair length matching.
+
+See [FEATURES.md](./FEATURES.md) for the currently supported behavior and
+representative success and failure tests.
 
 ## Initial no-op release
 
@@ -42,9 +46,9 @@ All lengths, including `lengthTolerance`, are in millimeters.
 The constructor receives the complete routed SRJ and the complete constraint
 array for one routed subcircuit. All pairs are intentionally passed to one
 solver invocation so future implementations can coordinate their geometry and
-validate the final result as a whole. Either member of a supplied pair may be
-rerouted, including a manually routed member. Non-pair traces remain immutable
-obstacles.
+validate the final result as a whole. The planned matching implementation may
+reroute either member of a supplied pair, including a manually routed member;
+non-pair traces will remain immutable obstacles.
 
 Constructor inputs are never mutated. The solver snapshots both inputs, and
 each `getOutput()` call returns a new complete SRJ without sharing mutable

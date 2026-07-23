@@ -1,6 +1,9 @@
 import { expect, test } from "bun:test"
-import { DifferentialPairSolver } from "../lib"
-import { createSimpleRouteJson, differentialPairs } from "./fixtures"
+import { DifferentialPairSolver } from "../../../../lib"
+import {
+  createSimpleRouteJson,
+  differentialPairs,
+} from "../../../fixtures/differential-pair-solver"
 
 test("rejects malformed connections from JavaScript callers", () => {
   const simpleRouteJson = createSimpleRouteJson()

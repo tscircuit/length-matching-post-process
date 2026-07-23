@@ -1,6 +1,12 @@
 import { expect, test } from "bun:test"
-import { DifferentialPairSolver, type SimpleRouteJson } from "../lib"
-import { createSimpleRouteJson, differentialPairs } from "./fixtures"
+import {
+  DifferentialPairSolver,
+  type SimpleRouteJson,
+} from "../../../../lib"
+import {
+  createSimpleRouteJson,
+  differentialPairs,
+} from "../../../fixtures/differential-pair-solver"
 
 test("rejects conflicting deprecated embedded constraints", () => {
   const simpleRouteJson: SimpleRouteJson = createSimpleRouteJson()

@@ -17,6 +17,26 @@ Do not format or lint unless explicitly requested.
   GitHub review thread. Do not resolve comments that remain partially
   addressed, ambiguous, or unverified.
 
+## Test Organization
+
+- Put every executable test at
+  `tests/features/<kebab-case-feature>/{success,failure}/<descriptive-name>.test.ts`.
+  Do not create root-level, `misc`, or `random` test catchalls.
+- `success` tests exercise supported behavior. `failure` tests verify an
+  expected rejection or error for invalid input or state; they are not broken
+  tests.
+- Each test file must contain exactly one `test()` or `it()` call. Name files
+  after the observable scenario rather than numeric ordering.
+- Put shared fixtures and helpers under `tests/fixtures/` or `tests/utils/`
+  without a `.test.*` suffix.
+- Place regressions and reproductions under the feature whose public contract
+  they exercise. Split tests that cover independent feature contracts.
+- Keep `FEATURES.md` synchronized with implemented behavior. Every listed
+  feature must link to one or two representative tests.
+- New features should normally have meaningful success and failure coverage. If
+  no failure mode exists, document that in `FEATURES.md` instead of inventing a
+  meaningless test.
+
 ## Code Style
 
 - Use `@tscircuit/length-matching-post-process` as this package's name.
@@ -29,8 +49,6 @@ Do not format or lint unless explicitly requested.
 - Add concise one- or two-line JSDoc comments to exported types and properties
   and to every public class and method.
 - Throwing an error is allowed for invalid states and failure cases.
-- Each test file must contain exactly one `test()` or `it()` call. Split
-  additional cases into separate, descriptively named test files.
 - Avoid `as` and non-null assertions when contextual typing, `satisfies`,
   control-flow narrowing, or explicit domain annotations can establish the
   type.

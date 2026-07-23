@@ -3,8 +3,11 @@ import {
   type DifferentialPairConstraints,
   DifferentialPairSolver,
   type SimpleRouteJson,
-} from "../lib"
-import { createSimpleRouteJson, differentialPairs } from "./fixtures"
+} from "../../../../lib"
+import {
+  createSimpleRouteJson,
+  differentialPairs,
+} from "../../../fixtures/differential-pair-solver"
 
 test("accepts equivalent embedded constraints in any pair or member order", () => {
   const simpleRouteJson: SimpleRouteJson = createSimpleRouteJson()

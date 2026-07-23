@@ -1,5 +1,8 @@
 import { DifferentialPairSolver } from "../lib"
-import { createSimpleRouteJson, differentialPairs } from "../tests/fixtures"
+import {
+  createSimpleRouteJson,
+  differentialPairs,
+} from "../tests/fixtures/differential-pair-solver"
 
 const inputSimpleRouteJson = createSimpleRouteJson()
 const solver = new DifferentialPairSolver(

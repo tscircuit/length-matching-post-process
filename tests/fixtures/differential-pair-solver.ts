@@ -1,4 +1,4 @@
-import type { DifferentialPairConstraints, SimpleRouteJson } from "../lib"
+import type { DifferentialPairConstraints, SimpleRouteJson } from "../../lib"
 
 export const differentialPairs: readonly DifferentialPairConstraints[] = [
   {

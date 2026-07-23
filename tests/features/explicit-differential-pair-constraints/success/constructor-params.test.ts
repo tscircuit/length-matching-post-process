@@ -2,8 +2,11 @@ import { expect, test } from "bun:test"
 import {
   type DifferentialPairConstraints,
   DifferentialPairSolver,
-} from "../lib"
-import { createSimpleRouteJson, differentialPairs } from "./fixtures"
+} from "../../../../lib"
+import {
+  createSimpleRouteJson,
+  differentialPairs,
+} from "../../../fixtures/differential-pair-solver"
 
 test("retains every supplied pair as solver context", () => {
   const simpleRouteJson = createSimpleRouteJson()

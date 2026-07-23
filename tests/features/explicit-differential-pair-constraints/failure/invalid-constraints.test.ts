@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
-import { DifferentialPairSolver } from "../lib"
-import { createSimpleRouteJson } from "./fixtures"
+import { DifferentialPairSolver } from "../../../../lib"
+import { createSimpleRouteJson } from "../../../fixtures/differential-pair-solver"
 
 test("rejects malformed explicit constraints from JavaScript callers", () => {
   expect(() => {
