@@ -15,6 +15,16 @@ structurally independent complete Simple Route JSON object. Coordinated
 length-matching and meander generation will replace the marked implementation
 boundary in a later release.
 
+## Install from GitHub
+
+Install the package directly from this repository with Bun:
+
+```sh
+bun add @tscircuit/length-matching-post-process@github:tscircuit/length-matching-post-process
+```
+
+The package is then available through its scoped package name.
+
 ## Usage
 
 ```ts
