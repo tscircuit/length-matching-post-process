@@ -1,6 +1,6 @@
-export { DifferentialPairSolver } from "./differential-pair-solver.ts"
+export { DifferentialPairSolver } from "./differential-pair-solver"
 export type {
   DifferentialPairConstraints,
   SimpleRouteJson,
   SimplifiedPcbTrace,
-} from "./simple-route-json.ts"
+} from "./simple-route-json"

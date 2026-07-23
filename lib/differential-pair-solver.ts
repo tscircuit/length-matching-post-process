@@ -1,7 +1,7 @@
 import type {
   DifferentialPairConstraints,
   SimpleRouteJson,
-} from "./simple-route-json.ts"
+} from "./simple-route-json"
 
 const parseDifferentialPairConstraints = (
   differentialPairsData: unknown,
