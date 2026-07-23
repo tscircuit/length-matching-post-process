@@ -17,13 +17,18 @@ boundary in a later release.
 
 ## Install from GitHub
 
-Install the package directly from this repository with Bun:
+Add the package to your dependencies using a pinned Git commit:
 
-```sh
-bun add @tscircuit/length-matching-post-process@github:tscircuit/length-matching-post-process
+```json
+{
+  "dependencies": {
+    "@tscircuit/length-matching-post-process": "git+https://github.com/tscircuit/length-matching-post-process.git#<commit-sha>"
+  }
+}
 ```
 
-The package is then available through its scoped package name.
+Then run `bun install`. The package is available through its scoped package
+name.
 
 ## Usage
 
