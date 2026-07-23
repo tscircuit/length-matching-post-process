@@ -11,6 +11,12 @@
 
 Do not format or lint unless explicitly requested.
 
+## Review Workflow
+
+- After implementing and verifying a pull-request review comment, resolve its
+  GitHub review thread. Do not resolve comments that remain partially
+  addressed, ambiguous, or unverified.
+
 ## Code Style
 
 - Use `@tscircuit/length-matching-post-process` as this package's name.
