@@ -7,10 +7,14 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": true
   },
   "include": [
+    "fixtures/**/*.tsx",
+    "lib/**/*.ts",
     "main.tsx",
+    "tests/**/*.ts",
     "vite.config.ts"
   ]
 }
