@@ -39,6 +39,8 @@ Do not format or lint unless explicitly requested.
 
 ## Code Style
 
+- No file may exceed 500 lines. Split files by domain responsibility before
+  they reach this limit.
 - Use `@tscircuit/length-matching-post-process` as this package's name.
 - Import canonical domain types directly from their owning package instead of
   recreating them with `Omit`, aliases, or duplicate interfaces.
