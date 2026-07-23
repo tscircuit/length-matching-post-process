@@ -37,6 +37,15 @@ Do not format or lint unless explicitly requested.
   no failure mode exists, document that in `FEATURES.md` instead of inventing a
   meaningless test.
 
+## Feature Flags
+
+- Every new user-facing feature should ideally be independently controllable
+  with a feature flag.
+- Name each flag after the behavior it controls and document it in
+  `FEATURES.md`.
+- Test both enabled and disabled behavior. If a feature cannot reasonably be
+  flagged, document why in `FEATURES.md`.
+
 ## Code Style
 
 - No file may exceed 500 lines. Split files by domain responsibility before
