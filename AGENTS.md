@@ -3,7 +3,10 @@
 ## Commands
 
 - Start Cosmos: `bun run start`
-- Build Vite: `bun run build`
+- Build the package: `bun run build`
+- Build the Vite playground: `bun run build:playground`
+- Typecheck: `bun run typecheck`
+- Test: `bun test`
 - Export Cosmos: `bun run cosmos:export`
 
 Do not format or lint unless explicitly requested.
@@ -17,5 +20,16 @@ Do not format or lint unless explicitly requested.
   `DifferentialPairConstraints`; do not prefix it with a transport format name.
 - Inline helpers shorter than 10 lines when the helper does not clarify a
   distinct domain operation.
-- Add concise one- or two-line JSDoc comments to every public class and method.
+- Add concise one- or two-line JSDoc comments to exported types and properties
+  and to every public class and method.
 - Throwing an error is allowed for invalid states and failure cases.
+- Each test file must contain exactly one `test()` or `it()` call. Split
+  additional cases into separate, descriptively named test files.
+- Avoid `as` and non-null assertions when contextual typing, `satisfies`,
+  control-flow narrowing, or explicit domain annotations can establish the
+  type.
+- Parse optional or untrusted boundary data once into validated, non-optional
+  domain values before using it. Reconstruct typed values instead of allowing
+  `Array.isArray` to leak `any[]`.
+- Treat exported TypeScript APIs as runtime boundaries because JavaScript
+  callers can bypass static types; throw actionable errors for invalid shapes.

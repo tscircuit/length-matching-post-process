@@ -3,7 +3,76 @@ import type {
   SimpleRouteJson,
 } from "./simple-route-json"
 
+const parseDifferentialPairConstraints = (
+  differentialPairsData: unknown,
+): DifferentialPairConstraints[] => {
+  if (!Array.isArray(differentialPairsData)) {
+    throw new Error("Differential pair constraints must be an array.")
+  }
+
+  const differentialPairEntries: readonly unknown[] = differentialPairsData
+  return differentialPairEntries.map((differentialPairData, pairIndex) => {
+    if (
+      typeof differentialPairData !== "object" ||
+      differentialPairData === null
+    ) {
+      throw new Error(
+        `Invalid differential pair at index ${pairIndex}: expected an object.`,
+      )
+    }
+
+    const connectionNamesData =
+      "connectionNames" in differentialPairData
+        ? differentialPairData.connectionNames
+        : undefined
+    const connectionNames: readonly unknown[] = Array.isArray(
+      connectionNamesData,
+    )
+      ? connectionNamesData
+      : []
+    const firstConnectionName = connectionNames[0]
+    const secondConnectionName = connectionNames[1]
+    if (
+      connectionNames.length !== 2 ||
+      typeof firstConnectionName !== "string" ||
+      firstConnectionName.length === 0 ||
+      typeof secondConnectionName !== "string" ||
+      secondConnectionName.length === 0 ||
+      firstConnectionName === secondConnectionName
+    ) {
+      throw new Error(
+        `Invalid differential pair at index ${pairIndex}: connectionNames must contain two distinct, non-empty connection names.`,
+      )
+    }
+
+    const lengthTolerance =
+      "lengthTolerance" in differentialPairData
+        ? differentialPairData.lengthTolerance
+        : undefined
+    if (
+      typeof lengthTolerance !== "number" ||
+      !Number.isFinite(lengthTolerance) ||
+      lengthTolerance < 0
+    ) {
+      throw new Error(
+        `Invalid differential pair at index ${pairIndex}: lengthTolerance must be a finite, non-negative millimeter value.`,
+      )
+    }
+
+    return {
+      connectionNames: [firstConnectionName, secondConnectionName],
+      lengthTolerance,
+    }
+  })
+}
+
 const validateSimpleRouteJson = (simpleRouteJson: SimpleRouteJson): void => {
+  if (typeof simpleRouteJson !== "object" || simpleRouteJson === null) {
+    throw new Error(
+      "DifferentialPairSolver requires a complete routed SimpleRouteJson object.",
+    )
+  }
+
   if (!Array.isArray(simpleRouteJson.connections)) {
     throw new Error(
       "DifferentialPairSolver requires a complete routed SimpleRouteJson with a connections array.",
@@ -22,40 +91,28 @@ const validateDifferentialPairs = (
   differentialPairs: readonly DifferentialPairConstraints[],
 ): void => {
   const connectionCountsByName = new Map<string, number>()
-  for (const connection of simpleRouteJson.connections) {
+  const connectionEntries: readonly unknown[] = simpleRouteJson.connections
+  for (const [connectionIndex, connectionData] of connectionEntries.entries()) {
+    if (
+      typeof connectionData !== "object" ||
+      connectionData === null ||
+      !("name" in connectionData) ||
+      typeof connectionData.name !== "string" ||
+      connectionData.name.length === 0
+    ) {
+      throw new Error(
+        `Invalid SimpleRouteJson connection at index ${connectionIndex}: name must be a non-empty string.`,
+      )
+    }
+
     connectionCountsByName.set(
-      connection.name,
-      (connectionCountsByName.get(connection.name) ?? 0) + 1,
+      connectionData.name,
+      (connectionCountsByName.get(connectionData.name) ?? 0) + 1,
     )
   }
 
   for (const [pairIndex, differentialPair] of differentialPairs.entries()) {
-    const { connectionNames, lengthTolerance } = differentialPair
-    if (
-      !Array.isArray(connectionNames) ||
-      connectionNames.length !== 2 ||
-      connectionNames.some(
-        (connectionName) =>
-          typeof connectionName !== "string" || connectionName.length === 0,
-      ) ||
-      connectionNames[0] === connectionNames[1]
-    ) {
-      throw new Error(
-        `Invalid differential pair at index ${pairIndex}: connectionNames must contain two distinct, non-empty connection names.`,
-      )
-    }
-
-    if (
-      typeof lengthTolerance !== "number" ||
-      !Number.isFinite(lengthTolerance) ||
-      lengthTolerance < 0
-    ) {
-      throw new Error(
-        `Invalid differential pair at index ${pairIndex}: lengthTolerance must be a finite, non-negative millimeter value.`,
-      )
-    }
-
-    for (const connectionName of connectionNames) {
+    for (const connectionName of differentialPair.connectionNames) {
       const connectionCount = connectionCountsByName.get(connectionName) ?? 0
       if (connectionCount === 0) {
         throw new Error(
@@ -70,18 +127,26 @@ const validateDifferentialPairs = (
     }
   }
 
-  const embeddedDifferentialPairs = simpleRouteJson.differentialPairs as
-    | DifferentialPairConstraints[]
-    | undefined
-  if (embeddedDifferentialPairs) {
+  const embeddedDifferentialPairsData: unknown =
+    simpleRouteJson.differentialPairs
+  if (embeddedDifferentialPairsData !== undefined) {
+    const embeddedDifferentialPairs = parseDifferentialPairConstraints(
+      embeddedDifferentialPairsData,
+    )
     const embeddedPairKeys = embeddedDifferentialPairs
       .map(({ connectionNames, lengthTolerance }) =>
-        JSON.stringify({ connectionNames, lengthTolerance }),
+        JSON.stringify({
+          connectionNames: connectionNames.toSorted(),
+          lengthTolerance,
+        }),
       )
       .sort()
     const explicitPairKeys = differentialPairs
       .map(({ connectionNames, lengthTolerance }) =>
-        JSON.stringify({ connectionNames, lengthTolerance }),
+        JSON.stringify({
+          connectionNames: connectionNames.toSorted(),
+          lengthTolerance,
+        }),
       )
       .sort()
     if (
@@ -110,10 +175,12 @@ export class DifferentialPairSolver {
     differentialPairs: readonly DifferentialPairConstraints[],
   ) {
     validateSimpleRouteJson(simpleRouteJson)
-    validateDifferentialPairs(simpleRouteJson, differentialPairs)
+    const parsedDifferentialPairs =
+      parseDifferentialPairConstraints(differentialPairs)
+    validateDifferentialPairs(simpleRouteJson, parsedDifferentialPairs)
 
     this.inputSimpleRouteJson = structuredClone(simpleRouteJson)
-    this.inputDifferentialPairs = structuredClone(differentialPairs)
+    this.inputDifferentialPairs = parsedDifferentialPairs
   }
 
   /** Returns independent snapshots of the solver's constructor inputs. */

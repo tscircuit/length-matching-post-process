@@ -1,8 +1,4 @@
-import {
-  DifferentialPairSolver,
-  type SimpleRouteJson,
-  type SimplifiedPcbTrace,
-} from "../lib"
+import { DifferentialPairSolver } from "../lib"
 import { createSimpleRouteJson, differentialPairs } from "../tests/fixtures"
 
 const inputSimpleRouteJson = createSimpleRouteJson()
@@ -18,7 +14,7 @@ const RoutedPair = ({
   xOffset,
   title,
 }: {
-  simpleRouteJson: SimpleRouteJson
+  simpleRouteJson: ReturnType<typeof createSimpleRouteJson>
   xOffset: number
   title: string
 }) => (
@@ -35,30 +31,13 @@ const RoutedPair = ({
       fill="#f8fafc"
       stroke="#94a3b8"
     />
-    {(
-      simpleRouteJson.traces as SimplifiedPcbTrace[] | undefined
-    )?.slice(0, 2).map((trace, traceIndex) => {
-      const routePoints = trace.route as Array<{
-        route_type: string
-        x?: number
-        y?: number
-      }>
-      const wirePoints = routePoints.filter(
-        (
-          routePoint,
-        ): routePoint is { route_type: "wire"; x: number; y: number } =>
-          routePoint.route_type === "wire" &&
-          typeof routePoint.x === "number" &&
-          typeof routePoint.y === "number",
-      )
+    {simpleRouteJson.traces.slice(0, 2).map((trace, traceIndex) => {
+      const wirePoints = trace.route
       return (
         <g key={trace.pcb_trace_id}>
           <polyline
             points={wirePoints
-              .map(
-                ({ x, y }) =>
-                  `${35 + x * 13},${90 - y * 20}`,
-              )
+              .map(({ x, y }) => `${35 + x * 13},${90 - y * 20}`)
               .join(" ")}
             fill="none"
             stroke={traceIndex === 0 ? "#dc2626" : "#2563eb"}
