@@ -1,0 +1,27 @@
+{
+  "name": "@tscircuit/length-matching-solver",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "start": "cosmos",
+    "build": "vite build",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "cosmos:export": "cosmos-export",
+    "vercel-build": "cosmos-export"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "^1.2.23",
+    "@types/react": "18",
+    "@types/react-dom": "18",
+    "@vitejs/plugin-react": "4",
+    "react": "18",
+    "react-cosmos": "6.2.3",
+    "react-cosmos-plugin-vite": "6.2.0",
+    "react-dom": "18",
+    "typescript": "^5.9.3",
+    "vite": "6",
+    "vite-tsconfig-paths": "5"
+  }
+}
