@@ -27,3 +27,19 @@ The initial release is covered by contract tests rather than feature tests:
 
 - [returns an independent no-op output](tests/features/routed-srj-pass-through/success/output-cloning.test.ts)
 - [rejects invalid pair constraints](tests/features/explicit-differential-pair-constraints/failure/unknown-connection.test.ts)
+
+## Constraint-array validation
+
+Explicit and deprecated embedded constraint arrays reject sparse slots with an
+indexed validation error. Input validation always applies and has no feature flag.
+
+- [rejects sparse explicit constraints](tests/features/explicit-differential-pair-constraints/failure/sparse-constraints.test.ts)
+- [rejects sparse embedded constraints](tests/features/deprecated-embedded-constraint-compatibility/failure/sparse-constraints.test.ts)
+
+## Indexed constraint preservation
+
+Constraint validation reads numeric array entries, regardless of a custom
+iterator. This input-boundary behavior always applies and has no feature flag.
+
+- [retains indexed constraints with an empty iterator](tests/features/explicit-differential-pair-constraints/success/iterator-preserves-indexed-constraints.test.ts)
+- [rejects an indexed invalid entry hidden by an iterator](tests/features/deprecated-embedded-constraint-compatibility/failure/iterator-cannot-hide-invalid-constraint.test.ts)
