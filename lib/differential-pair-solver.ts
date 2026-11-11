@@ -11,7 +11,11 @@ const parseDifferentialPairConstraints = (
   }
 
   const differentialPairEntries: readonly unknown[] = differentialPairsData
-  return differentialPairEntries.map((differentialPairData, pairIndex) => {
+  const pairCount = differentialPairEntries.length
+  const differentialPairs: DifferentialPairConstraints[] = []
+  // Validate every indexed slot without relying on a customizable iterator.
+  for (let pairIndex = 0; pairIndex < pairCount; pairIndex++) {
+    const differentialPairData = differentialPairEntries[pairIndex]
     if (
       typeof differentialPairData !== "object" ||
       differentialPairData === null
@@ -59,11 +63,13 @@ const parseDifferentialPairConstraints = (
       )
     }
 
-    return {
+    differentialPairs.push({
       connectionNames: [firstConnectionName, secondConnectionName],
       lengthTolerance,
-    }
-  })
+    })
+  }
+
+  return differentialPairs
 }
 
 const validateSimpleRouteJson = (simpleRouteJson: SimpleRouteJson): void => {
